@@ -1,0 +1,27 @@
+# Transfer artifacts
+*.bundle
+*.patch
+
+# WordPress
+wp-content/
+wp-config.php
+.htaccess
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+debug.log
+
+# Temporary files
+*.tmp
+*.temp
