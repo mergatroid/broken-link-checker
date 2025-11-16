@@ -46,7 +46,7 @@ define('BLC_FOR_EDITING', 'edit');
 define('BLC_FOR_PARSING', 'parse');
 define('BLC_FOR_DISPLAY', 'display');
 
-define('BLC_DATABASE_VERSION', 9);
+define('BLC_DATABASE_VERSION', 10); // v10: Added SEO analysis tables (Phase 1)
 
 /***********************************************
 				Configuration
@@ -129,6 +129,18 @@ $blc_config_manager = new blcConfigurationManager(
 
 		                              //Visible link actions.
 		'show_link_actions' => array('blc-deredirect-action' => false),
+
+		// SEO Analysis Settings (Phase 1 - v2.0)
+		'seo_analysis_enabled' => true,       // Enable SEO analysis features
+		'seo_check_titles' => true,           // Check page titles
+		'seo_check_meta_descriptions' => true, // Check meta descriptions
+		'seo_check_headings' => true,         // Check heading structure (H1-H6)
+		'seo_check_images' => true,           // Check image alt text
+		'seo_title_min_length' => 30,         // Minimum title length (characters)
+		'seo_title_max_length' => 60,         // Maximum title length (characters)
+		'seo_meta_min_length' => 50,          // Minimum meta description length
+		'seo_meta_max_length' => 160,         // Maximum meta description length
+		'seo_scan_interval' => 168,           // SEO scan interval (hours) - default weekly
    )
 );
 
@@ -317,11 +329,16 @@ if ( $blc_config_manager->options['installation_complete'] ){
 		$blc_module_manager->load_modules();
 		
 		if ( is_admin() || defined('DOING_CRON') ){
-			
+
 			//It's an admin-side or Cron request. Load the core.
 			require_once BLC_DIRECTORY . '/core/core.php';
 			$ws_link_checker = new wsBrokenLinkChecker( BLC_PLUGIN_FILE, $blc_config_manager );
-			
+
+			//Load SEO analysis features (v2.0 - Phase 1)
+			if ( file_exists( BLC_DIRECTORY . '/includes/seo-integration.php' ) ) {
+				require_once BLC_DIRECTORY . '/includes/seo-integration.php';
+			}
+
 		} else {
 			
 			//This is user-side request, so we don't need to load the core.

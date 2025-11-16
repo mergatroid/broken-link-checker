@@ -54,7 +54,16 @@ class blcDatabaseUpgrader {
 		if ( !function_exists('blc_get_db_schema') ){
 			require 'db-schema.php';
 		}
-		list($dummy, $query_log) = blcTableDelta::delta(blc_get_db_schema());
+
+		// Load SEO schema (v2.0 - Phase 1)
+		if ( !function_exists('blc_get_seo_db_schema') ){
+			require 'db-schema-seo.php';
+		}
+
+		// Combine core and SEO schemas
+		$full_schema = blc_get_db_schema() . "\n" . blc_get_seo_db_schema();
+
+		list($dummy, $query_log) = blcTableDelta::delta($full_schema);
 		
 		$have_errors = false;
 		foreach($query_log as $item){
